@@ -12,22 +12,15 @@ RenderWindow::RenderWindow(const char* p_tittle, int p_w, int p_h) :window(NULL)
 
 SDL_Texture* RenderWindow::loadTexture(const char* p_filepath)
 {
-	SDL_Texture* texture = NULL;
-	texture = IMG_LoadTexture(renderer, p_filepath);
+	SDL_Texture* optimizetexture = NULL;
+	SDL_Texture* texture = IMG_LoadTexture(renderer, p_filepath);
 	if (texture == NULL) {
 		std::cout << "Can't load the texture..." << SDL_GetError() << std::endl;
 	}
+
 	return texture;
 }
 
-int RenderWindow::getRefreshRate()
-{
-	int displayIndex = SDL_GetWindowDisplayIndex(window);
-
-	SDL_DisplayMode mode;
-	SDL_GetDisplayMode(displayIndex, 0, &mode);
-	return mode.refresh_rate;
-}
 
 void RenderWindow::cleanup()
 {
@@ -45,10 +38,10 @@ void RenderWindow::render(Entity& p_entity) {
 	src.h = p_entity.getcurrentFrame().h;
 
 	SDL_Rect dst;// destination
-	dst.x = p_entity.getPos().x *4;
-	dst.y = p_entity.getPos().y *4;
-	dst.w = p_entity.getcurrentFrame().w *4;
-	dst.h = p_entity.getcurrentFrame().h *4;
+	dst.x = p_entity.getPos().x;
+	dst.y = p_entity.getPos().y;
+	dst.w = p_entity.getcurrentFrame().w;
+	dst.h = p_entity.getcurrentFrame().h;
 
 
 	SDL_RenderCopy(renderer, p_entity.getTex(), &src, &dst);
@@ -57,4 +50,7 @@ void RenderWindow::render(Entity& p_entity) {
 void RenderWindow::display() 
 {
 	SDL_RenderPresent(renderer);
+}
+SDL_Renderer* RenderWindow::getRenderer() {
+	return renderer;
 }

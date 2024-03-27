@@ -72,9 +72,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\DELL\Desktop\SDL2-2.30.0\include;C:\Users\DELL\Desktop\SDL2_image-2.8.2\include;$(IncludePath)</IncludePath>
-    <ExternalIncludePath>C:\Users\DELL\Desktop\SDL2_image-2.8.2\include;C:\Users\DELL\Desktop\SDL2-2.30.0\include;$(ExternalIncludePath)</ExternalIncludePath>
-    <LibraryPath>C:\Users\DELL\Desktop\SDL2_image-2.8.2\lib\x86;C:\Users\DELL\Desktop\SDL2-2.30.0\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\DELL\Desktop\SDL2_mixer-2.8.0\include;C:\Users\DELL\Desktop\SDL2_ttf-2.22.0\include;C:\Users\DELL\Desktop\SDL2-2.30.0\include;C:\Users\DELL\Desktop\SDL2_image-2.8.2\include;$(IncludePath)</IncludePath>
+    <ExternalIncludePath>$(ExternalIncludePath)</ExternalIncludePath>
+    <LibraryPath>C:\Users\DELL\Desktop\SDL2_mixer-2.8.0\lib\x86;C:\Users\DELL\Desktop\SDL2_ttf-2.22.0\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -91,11 +91,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Users\DELL\Desktop\SDL2_mixer-2.8.0\include;C:\Users\DELL\Desktop\SDL2_image-2.8.2\include;C:\Users\DELL\Desktop\SDL2-2.30.0\include;C:\Users\DELL\Desktop\SDL2_ttf-2.22.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL.h;SDL_image.h;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\DELL\Desktop\SDL2_mixer-2.8.0\lib\x86;C:\Users\DELL\Desktop\SDL2_image-2.8.2\lib\x86;C:\Users\DELL\Desktop\SDL2_ttf-2.22.0\lib\x86;C:\Users\DELL\Desktop\SDL2-2.30.0\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -145,17 +147,16 @@
   <ItemGroup>
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="MainCharacter.cpp" />
+    <ClCompile Include="Map.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="RenderWindow.cpp" />
-    <ClCompile Include="utiliti.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h" />
-    <ClInclude Include="MainCharacter.h" />
+    <ClInclude Include="Char.h" />
+    <ClInclude Include="Map.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="RenderWindow.h" />
-    <ClInclude Include="utiliti.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

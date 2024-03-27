@@ -1,10 +1,23 @@
-
 #include "RenderWindow.h"
 #include "Entity.h"
 #include <iostream>
 #include <vector>
 #include "utiliti.h"
-#include "MainCharacter.h"
+#include "Map.h"
+#include "Char.h"
+
+//hieu ung nhan vat
+
+//hieu ung dung yen
+
+SDL_Rect gSpriteClips[] = {
+(0,0,64,64), (64,0,64,64), (128,0,64,64),(192,0,64,64), (256,0,64,64), (320,0,64,64),(384,0,64,64)
+};
+
+
+
+
+
 SDL_Event event;
 
 int main(int argc, char* argv[]) {
@@ -16,65 +29,40 @@ int main(int argc, char* argv[]) {
 	if (!(IMG_Init(IMG_INIT_PNG))) {
 		std::cout << "IMG_INIT has failed..." << SDL_GetError() << std::endl;
 	}
-
+	Tile* tileSet[TOTAL_TILES];
 
 	RenderWindow window("SDL_game", 960, 540);
 
+	// background
+	SDL_Texture* background = window.loadTexture("gfx/background.png");
+	SDL_Texture* Clip = window.loadTexture("gfx/thickldle.png");
 
-	SDL_Texture* grassTexture = window.loadTexture("gfx/ground_grass_1.png");
-	SDL_Texture* foo = window.loadTexture("gfx/foo.png");
+	Entity bkground(Vector2f(0, 0), background, { 0,0,960,540 });
+	
 
-	std::vector <Entity> entities = { Entity(Vector2f(30,0), grassTexture)
-						, Entity(Vector2f(30,30), grassTexture)
-	};
-	mainCharacter c(Vector2f(0, 30), foo);
 
+
+	
+	int frame = 0;
 	bool isrunning = true;
 	SDL_Event event;
-	const float timestep = 0.01f;
-	float accumulator = 0.0f; // bo tich luy
-	float currentTime = utils::hireTumeInSecond();
 
 	while (isrunning)
 	{
-		//get fps
-		int startTicks = SDL_GetTicks();
-		float newTime = utils::hireTumeInSecond();
-		float frameTime = newTime - currentTime;
-
-		currentTime = newTime;
-		accumulator += frameTime;
-		while (accumulator >= timestep)
-		{
 			while (SDL_PollEvent(&event))
 			{
 				if (event.type == SDL_QUIT) {
 					isrunning = false;
 				}
 			}
-			accumulator -= timestep;
-			std::cout << utils::hireTumeInSecond() << std::endl;
-		}
-
-		const float alpha = accumulator / timestep; // 50%
-
-
-
-
+		SDL_Rect currentClip = gSpriteClips[frame / 4];
+		Entity spriteclip(Vector2f(0, 0), Clip, currentClip);
+		
 		window.clear();
-		for (Entity& e : entities) {
-			window.render(e);
-		}
-
-		window.render(c);
-		std::cout << utils::hireTumeInSecond() << std::endl;
-
+		
+		window.render(spriteclip);
+		frame++;
 		window.display();
-
-		int frameTicks = SDL_GetTicks() - startTicks;
-		if (frameTicks > window.getRefreshRate()) {
-			SDL_Delay(window.getRefreshRate() - frameTicks);
-		}
 
 	}
 
@@ -82,3 +70,4 @@ int main(int argc, char* argv[]) {
 	SDL_Quit();
 	return 0;
 }
+
