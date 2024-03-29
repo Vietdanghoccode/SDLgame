@@ -145,18 +145,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Map.cpp" />
-    <ClCompile Include="Math.cpp" />
-    <ClCompile Include="RenderWindow.cpp" />
+    <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Pacman.cpp" />
+    <ClCompile Include="PlayStateManager.cpp" />
+    <ClCompile Include="TextureSrc.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Entity.h" />
-    <ClInclude Include="Char.h" />
+    <ClInclude Include="Engine.h" />
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="LogStatus.h" />
     <ClInclude Include="Map.h" />
-    <ClInclude Include="Math.h" />
-    <ClInclude Include="RenderWindow.h" />
+    <ClInclude Include="Object.h" />
+    <ClInclude Include="Pacman.h" />
+    <ClInclude Include="PlayStateManager.h" />
+    <ClInclude Include="TextureSrc.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
