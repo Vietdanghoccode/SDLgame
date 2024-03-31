@@ -69,6 +69,7 @@ void Engine::render(SDL_Renderer*& renderer) {
 		for (int j = 0; j < 31; ++j) {
 			dsRect = { i * 16, j * 16, 16, 16 };
 			objectTexture->renderTileTexture(renderer, map->getTileID(i, j), &dsRect);
+
 		}
 	}
 
@@ -84,5 +85,5 @@ void Engine::loop() {
 		pacman->manageMove();
 		pacman->move();
 	}
-	//else pacman->stop();
+	else pacman->stop();
 }

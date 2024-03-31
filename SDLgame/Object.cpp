@@ -31,6 +31,19 @@ void Object::stop() {
 	scrPosY = tileY * 16;
 }
 
+void Object::changeVelocityDir(int p_velX, int p_velY, int p_dir) {
+	velX = p_velX;
+	velY = p_velY;
+	dir = p_dir;
+};
+
+void Object::changePos(int& newtileX, int& newtileY) {
+	scrPosX = newtileX * 16;
+	scrPosY = newtileY * 16;
+	tileX = newtileX;
+	tileY = newtileY;
+}
+
 std::pair<int, int> Object::getNextTileID(int tempDir) {
 	if (tempDir == 0) tempDir = dir;
 	nextTileID = { tileX, tileY };

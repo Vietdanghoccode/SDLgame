@@ -12,3 +12,4 @@ void Pacman::manageMove() {
 		changePos(nextTile.first, nextTile.second);
 	} // <= 2 vi van toc cua pacman = 2;
 }
+

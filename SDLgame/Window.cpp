@@ -65,7 +65,9 @@ void Window::runGame() {
 		while (SDL_PollEvent(&e) != 0) {
 			if (e.type == SDL_QUIT) Running = false;
 			engine->handleEvent(e);
+
 		}
+
 		engine->loop();
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 

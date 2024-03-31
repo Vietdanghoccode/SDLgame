@@ -28,7 +28,6 @@ void TextureSrc::loadTileTexture(SDL_Renderer*& renderer) {
 			if (i % 4 == 3) x += 17, y = 0;
 		}
 
-		//tileSprites[26].h = 7;
 		Console->Status("Tile texture got successfully");
 	}
 
@@ -37,7 +36,6 @@ void TextureSrc::loadTileTexture(SDL_Renderer*& renderer) {
 }
 
 void TextureSrc::renderTileTexture(SDL_Renderer*& renderer, int tileID, SDL_Rect* dsRect) {
-    //std::cout << tileID << std::endl;
 	SDL_RenderCopy(renderer, tileTexture, &tileSprite[tileID], dsRect);
 }
 

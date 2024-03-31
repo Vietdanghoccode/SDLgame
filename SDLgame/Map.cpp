@@ -2,7 +2,7 @@
 
 
 bool firstInit = true;
-int premanMap[28][31];
+int premanMap[31][28];
 Map::Map() {
 	if (firstInit) {
 		std::ifstream file("gfx/map.txt");
@@ -36,7 +36,7 @@ Map::~Map() {
 }
 
 int Map::getTileID(int x, int y) {
-	return tile[x][y];
+	return tile[y][x];
 }
 
 bool Map::isWall(std::pair<int, int> tileID) {

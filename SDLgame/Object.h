@@ -36,19 +36,10 @@ public:
 		return dir % 2;
 	}
 
-	void changeVelocityDir(int p_velX, int p_velY, int p_dir){
-		velX = p_velX;
-		velY = p_velY;
-		dir = p_dir;
-	};
+	void changeVelocityDir(int p_velX, int p_velY, int p_dir);
 
 	std::pair <int, int> getNextTileID(int tempDir = 0);
 
-	void changePos(int& newPosX, int& newPosY) {
-		scrPosX = newPosX * 16;
-		scrPosY = newPosY * 16;
-		tileX = newPosX;
-		tileY = newPosY;
-	}
+	void changePos(int& newPosX, int& newPosY);
 	
 };

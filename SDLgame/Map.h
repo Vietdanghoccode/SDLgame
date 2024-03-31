@@ -6,8 +6,8 @@
 
 class Map {
 private:
-	static const int MAP_WIDTH = 31;
-	static const int MAP_HEIGHT = 28;
+	static const int MAP_WIDTH = 28;
+	static const int MAP_HEIGHT = 31;
 
 
 	LogStatus* Console = new LogStatus("Map");
