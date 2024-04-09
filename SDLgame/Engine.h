@@ -30,6 +30,4 @@ public:
 
 	void loop();
 
-	bool pacmanCanMove();
-
 };
