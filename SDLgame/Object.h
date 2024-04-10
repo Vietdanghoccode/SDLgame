@@ -23,8 +23,6 @@ public:
 
 	void move();
 
-	void stop();
-
 	int getPosX() const {
 		return scrPosX;
 	}

@@ -20,7 +20,7 @@ void Pacman::pushSpecialStack(int newDir, std::pair<int, int> nextCross) {
 	if (!Special.empty()) {
 		if (Special.top().first != newDir) {
 			Special.pop();
-			Special.push(IP(newDir, nextCross));
+			Special.push(IP(newDir, nextCross) );
 		}
 	}
 	else {

@@ -67,7 +67,7 @@ void Engine::handleEvent(SDL_Event& e) {
 				else {
 					std::pair<int, int> nextCross = map->getnextCrossID(pacmanTileX, pacmanTileY, newDir);
 					if (lastDir % 2 == 0 && newDir % 2 == 1) { // dang di doc thi re ngang
-						if (pacmanPosY = pacmanTileY * 16) {
+						if (pacmanPosY == pacmanTileY * 16) {
 							if (map->canChangDir(pacmanTileX, pacmanTileY, newDir)) {
 								pacman->pushSpecialStack(newDir, II(pacmanTileX, pacmanTileY));
 							}
@@ -76,7 +76,7 @@ void Engine::handleEvent(SDL_Event& e) {
 							}
 						}
 					}
-					else { // lastDir % 2 == 1 && newDir % 2 == 0 (dang di ngang thi re doc)
+					else if(lastDir % 2 == 1 && newDir % 2 == 0) {//dang di ngang thi re doc
 						if (pacmanPosX == pacmanTileX * 16) {
 							if (map->canChangDir(pacmanTileX, pacmanTileY, newDir)) {
 								pacman->pushSpecialStack(newDir, II(pacmanTileX, pacmanTileY));
@@ -103,7 +103,12 @@ void Engine::render(SDL_Renderer*& renderer) {
 
 		}
 	}
-	objectTexture->renderPacmanTexture(renderer, pacman->getPosX(), pacman->getPosY(), 1);
+
+		std::cout << pacman->getPosX() << " " << pacman->getPosY() << std::endl;
+		std::cout << pacman->getTileX() << " " << pacman->getTileY() << std::endl;
+
+	
+ 	objectTexture->renderPacmanTexture(renderer, pacman->getPosX(), pacman->getPosY(), 1);
 
 
 }
@@ -136,5 +141,4 @@ void Engine::loop() {
 	map->eatenCoins(pacmanTileX, pacmanTileY);
 
 	
-	//else pacman->stop();
 }

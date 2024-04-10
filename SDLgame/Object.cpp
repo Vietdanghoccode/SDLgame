@@ -7,8 +7,8 @@ std::pair<int, int> nextTileID;
 Object::Object(int p_tileX, int p_tileY, int p_velX, int p_velY) {
 	tileX = p_tileX;
 	tileY = p_tileY;
-	if (velX != 0) velX = p_velX;
-	if (velY != 0) velY = p_velY;
+	if (velX != 0) this->velX = p_velX;
+	if (velY != 0) this->velY = p_velY;
 
 	this->scrPosX = tileX * 16;
 	this->scrPosY = tileY * 16;
@@ -26,9 +26,9 @@ void Object::move() {
 
 
 void Object::changeVelocityDir(int p_velX, int p_velY, int p_dir) {
-	velX = p_velX;
-	velY = p_velY;
-	dir = p_dir;
+	this->velX = p_velX;
+	this->velY = p_velY;
+	this->dir = p_dir;
 };
 
 void Object::changePos(int& newtileX, int& newtileY) {
