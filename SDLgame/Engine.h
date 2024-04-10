@@ -17,6 +17,7 @@ private:
 	Pacman* pacman;
 	TextureSrc* objectTexture;
 
+	int frame = 0;
 public:
 	Engine();
 	~Engine();

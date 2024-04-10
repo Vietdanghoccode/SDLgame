@@ -41,5 +41,5 @@ public:
 
 	void NextCrossTileID(); // nhap du lieu vao mang nextcrosstileid, tra ra vi tri cua loi re gan nhat co huong la direction
 
-	void eatenCoins(int pacmanTileX, int pacmanTileY);
+	bool eatenCoins(int pacmanTileX, int pacmanTileY);
 };

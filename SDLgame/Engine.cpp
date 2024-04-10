@@ -96,6 +96,7 @@ void Engine::handleEvent(SDL_Event& e) {
 
 void Engine::render(SDL_Renderer*& renderer) {
 	SDL_Rect dsRect;
+	++frame;
 	for (int i = 0; i < 28; ++i) {
 		for (int j = 0; j < 31; ++j) {
 			dsRect = { i * 16, j * 16, 16, 16 };
@@ -103,12 +104,11 @@ void Engine::render(SDL_Renderer*& renderer) {
 
 		}
 	}
-
-		std::cout << pacman->getPosX() << " " << pacman->getPosY() << std::endl;
-		std::cout << pacman->getTileX() << " " << pacman->getTileY() << std::endl;
+	int dir = 0;
+	if (!pacman->emptyDirStack()) dir = pacman->getDir();
 
 	
- 	objectTexture->renderPacmanTexture(renderer, pacman->getPosX(), pacman->getPosY(), 1);
+ 	objectTexture->renderPacmanTexture(renderer, pacman->getPosX(), pacman->getPosY(), dir, frame);
 
 
 }

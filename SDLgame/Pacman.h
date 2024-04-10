@@ -9,7 +9,7 @@ private:
 	std::stack<int> Direction;
 	std::stack<	std::pair< int, std::pair< int, int> > > Special; 
 public:
-	static const int pacmanVelocity = 2;
+	static const int pacmanVelocity = 1;
 
 	Pacman();
 
@@ -41,5 +41,9 @@ public:
 	void handleEvent(SDL_Event &e);
 
 	void eraseSpecial();
+
+	void eatCoins() {
+		++eatenCoins;
+	}
 
 };
