@@ -27,7 +27,7 @@ void Engine::init(SDL_Renderer*& renderer) {
 	pacman = new Pacman();
 	objectTexture = new TextureSrc();
 	objectTexture->loadTileTexture(renderer);
-	objectTexture->loadPacmanTexture(renderer);
+	objectTexture->loadPacmanAndGhostTexture(renderer);
 	pacman->pushtoStack(1);
 }
 
@@ -71,7 +71,7 @@ void Engine::handleEvent(SDL_Event& e) {
 							if (map->canChangDir(pacmanTileX, pacmanTileY, newDir)) {
 								pacman->pushSpecialStack(newDir, II(pacmanTileX, pacmanTileY));
 							}
-							else if(nextCross != II(-1, -1) && !map->besideCrossIsWall(nextCross, newDir) && abs(pacmanPosX - nextCross.first * 16 ) <= 30){
+							else if(nextCross != II(-1, -1) && !map->besideCrossIsWall(nextCross, newDir) && abs(pacmanPosX - nextCross.first * 16) <= 30) {
 								pacman->pushSpecialStack(newDir, nextCross);
 							}
 						}
@@ -81,7 +81,7 @@ void Engine::handleEvent(SDL_Event& e) {
 							if (map->canChangDir(pacmanTileX, pacmanTileY, newDir)) {
 								pacman->pushSpecialStack(newDir, II(pacmanTileX, pacmanTileY));
 							}
-							else if(nextCross != II(-1, -1) && !map->besideCrossIsWall(nextCross,newDir) && abs(pacmanPosY - nextCross.second * 16) <= 30){
+							else if(nextCross != II(-1, -1) && !map->besideCrossIsWall(nextCross,newDir)  &&abs(pacmanPosY - nextCross.second * 16) <= 30) {
 								pacman->pushSpecialStack(newDir, nextCross);
 							}
 						}
@@ -133,7 +133,7 @@ void Engine::loop() {
 			pacman->moving();
 		}
 		else {
-			if (pacmanTileX * 16 == pacman->getPosX() && pacmanTileY * 16 != pacman->getPosY() && lastDir % 2 == 1) pacman->moving();
+			if (pacmanTileX * 16 == pacman->getPosX() && pacmanTileY * 16 != pacman->getPosY() &&lastDir % 2 == 1) pacman->moving();
 			else if (pacmanTileX * 16 != pacman->getPosX() && pacmanTileY * 16 == pacman->getPosY() && lastDir % 2 == 0) pacman->moving();
 			else pacman->stopmoving();
 		}

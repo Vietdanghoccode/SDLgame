@@ -4,6 +4,8 @@
 TextureSrc::TextureSrc() {
 	tileTexture = NULL;
 	pacmanTexture = NULL;
+    ghostTexture = NULL;
+
 }
 
 TextureSrc::~TextureSrc() {
@@ -11,6 +13,8 @@ TextureSrc::~TextureSrc() {
 	tileTexture = NULL;
 	SDL_DestroyTexture(pacmanTexture);
 	pacmanTexture = NULL;
+    SDL_DestroyTexture(ghostTexture);
+    ghostTexture = NULL;
 }
 void TextureSrc::loadTileTexture(SDL_Renderer*& renderer) {
 	SDL_Surface* Image = IMG_Load("gfx/Pacman Tile Labyrinth.png");
@@ -39,7 +43,7 @@ void TextureSrc::renderTileTexture(SDL_Renderer*& renderer, int tileID, SDL_Rect
 	SDL_RenderCopy(renderer, tileTexture, &tileSprite[tileID], dsRect);
 }
 
-void TextureSrc::loadPacmanTexture(SDL_Renderer*& renderer) {
+void TextureSrc::loadPacmanAndGhostTexture(SDL_Renderer*& renderer) {
     SDL_Surface* Image = IMG_Load("gfx/Pacman and Ghost Texture.png");
 
     if (Image == nullptr) {
@@ -47,6 +51,7 @@ void TextureSrc::loadPacmanTexture(SDL_Renderer*& renderer) {
     }
     else {
         pacmanTexture = SDL_CreateTextureFromSurface(renderer, Image);
+        ghostTexture = pacmanTexture;
 
         int posTexX = 0, posTexY = 0;
         /// Pacman goes up
@@ -56,9 +61,9 @@ void TextureSrc::loadPacmanTexture(SDL_Renderer*& renderer) {
         /// Pacman goes left
         for (int i = 6; i < 9; ++i) pacmanLEFT[i % 3] = { posTexX, posTexY, 30, 30 }, posTexX += 31;
         /// Pacman goes right
-        for (int i = 9; i < 12; ++i) pacmanRIGHT[i % 3] = { posTexX, posTexY, 30, 30 }, posTexX += 31;
+        for (int i = 9; i < 12; ++i) pacmanRIGHT [i % 3] = { posTexX, posTexY, 30, 30 }, posTexX += 31;
         /// Pacman dead
-        for (int i = 0; i < 11; ++i) pacmanDEAD[i] = { 75, i * 15, 15, 15 };
+        for (int i = 0; i < 11; ++i) pacmanDEAD[i] = { posTexX, 155, 30, 30 }, posTexX += 31;
 
         Console->Status("Pacman Texture got successfully!");
     }
