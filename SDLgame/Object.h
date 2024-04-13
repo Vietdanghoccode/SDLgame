@@ -7,7 +7,7 @@ protected:
 	int scrPosX, scrPosY;
 	int velX = 0, velY = 0;
 	int tileX, tileY;
-	int dir = 1;
+	int dir;
 public:
 	static const int UP = 1;
 	static const int RIGHT = 2;
@@ -37,12 +37,8 @@ public:
 		return tileY;
 	}
 
-	int getOldDir() {
-		return dir % 2;
-	}
 
 	void changeVelocityDir(int p_velX, int p_velY, int p_dir);
 
-	void changePos(int& newPosX, int& newPosY);
-	
+	void goThroughTunnel();
 };

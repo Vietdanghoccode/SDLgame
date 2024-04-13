@@ -7,6 +7,9 @@ typedef std::pair<int, std::pair<int, int> > IP;
 
 Pacman::Pacman() : Object(13, 23) {
 	eatenCoins = 0;
+	dead = false;
+	while (!Direction.empty()) Direction.pop();
+	while (!Special.empty())   Special.pop();
 }
 
 

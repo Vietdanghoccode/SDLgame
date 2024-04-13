@@ -1,11 +1,11 @@
 #pragma once
 #include "Object.h"
-#include <SDL.h>
 #include <stack>
 
 class Pacman : public Object {
 private:
 	int eatenCoins;
+	bool dead;
 	std::stack<int> Direction;
 	std::stack<	std::pair< int, std::pair< int, int> > > Special; 
 public:
@@ -15,8 +15,12 @@ public:
 
 	~Pacman() {
 		eatenCoins = 0;
+		dead = false;
 	}
 	
+	bool isDead() {
+		return dead;
+	}
 	bool emptyDirStack() {
 		return Direction.empty();
 	}
@@ -37,8 +41,6 @@ public:
 	void moving();
 	void stopmoving();
 	void turn();
-
-	void handleEvent(SDL_Event &e);
 
 	void eraseSpecial();
 

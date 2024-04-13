@@ -51,6 +51,7 @@ void TextureSrc::loadPacmanAndGhostTexture(SDL_Renderer*& renderer) {
     }
     else {
         pacmanTexture = SDL_CreateTextureFromSurface(renderer, Image);
+
         ghostTexture = pacmanTexture;
 
         int posTexX = 0, posTexY = 0;
@@ -65,9 +66,27 @@ void TextureSrc::loadPacmanAndGhostTexture(SDL_Renderer*& renderer) {
         /// Pacman dead
         for (int i = 0; i < 11; ++i) pacmanDEAD[i] = { posTexX, 155, 30, 30 }, posTexX += 31;
 
-        Console->Status("Pacman Texture got successfully!");
-    }
+        Console->Status("Pacman got successfully!");
+        /// Ghost setup
+        posTexX = 0; posTexY = 31;
+        for (int i = 0; i < TOTAL_GHOST; ++i) {
+            ghost[i][UP][0] = { posTexX, posTexY, 30, 30 }; posTexX += 31;
+            ghost[i][UP][1] = { posTexX, posTexY, 30, 30 }; posTexX += 31;
+            ghost[i][DOWN][0] = { posTexX, posTexY, 30, 30 }; posTexX += 31;
+            ghost[i][DOWN][1] = { posTexX, posTexY, 30, 30 }; posTexX += 31;
+            ghost[i][LEFT][0] = { posTexX, posTexY, 30, 30 }; posTexX += 31;
+            ghost[i][LEFT][1] = { posTexX, posTexY, 30, 30 }; posTexX += 31;
+            ghost[i][RIGHT][0] = { posTexX, posTexY, 30, 30 }; posTexX += 31;
+            ghost[i][RIGHT][1] = { posTexX, posTexY, 30, 30 }; 
+            posTexX = 0;
+            posTexY += 31;
+        }
+        posTexX = 0; posTexY = 31;
+        frightenedGhost[0] = { 248, posTexY, 30, 30 }; 
+        frightenedGhost[1] = { 279, posTexY, 30, 30 };
 
+        Console->Status("Ghost Texture got successfully!");
+    }
     SDL_FreeSurface(Image);
     Image = nullptr;
 }
@@ -77,7 +96,7 @@ void TextureSrc::renderPacmanTexture(SDL_Renderer*& renderer, int posX, int posY
     dsRect = { posX - 7, posY - 7, 30, 30 };
 
     if (frame == 30) frame = 0;
-    int pacmanFrame = frame / 10;
+    int pacmanFrame = frame /10;
     switch (dir) {
     case 0: srcRect = pacmanUP[0]; break;
     case UP:    srcRect = pacmanUP[pacmanFrame]; break;
@@ -89,4 +108,25 @@ void TextureSrc::renderPacmanTexture(SDL_Renderer*& renderer, int posX, int posY
 
     SDL_RenderCopy(renderer, pacmanTexture, &srcRect, &dsRect);
 }
+
+void TextureSrc::renderGhostTexture(SDL_Renderer*& renderer, int posX, int posY, int ghostID, int dir, int& frame) {
+    SDL_Rect srcRect, dsRect;
+    dsRect = { posX - 7, posY - 7, 30, 30 };
+
+    if (frame == 14) frame = 0;
+    int ghostFrame = frame / 7;
+
+    switch (dir) {
+    case 0: srcRect = ghost[ghostID][UP][ghostFrame]; break;
+    case UP:    srcRect = ghost[ghostID][UP][ghostFrame]; break;
+    case RIGHT: srcRect = ghost[ghostID][RIGHT][ghostFrame]; break;
+    case DOWN:  srcRect = ghost[ghostID][DOWN][ghostFrame]; break;
+    case LEFT:  srcRect = ghost[ghostID][LEFT][ghostFrame]; break;
+        //case 5: srcRect = pacmanDEAD[0]; break;
+    }
+
+    SDL_RenderCopy(renderer, ghostTexture, &srcRect, &dsRect);
+}
+
+
 

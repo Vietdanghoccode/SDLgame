@@ -31,8 +31,16 @@ void Object::changeVelocityDir(int p_velX, int p_velY, int p_dir) {
 	this->dir = p_dir;
 };
 
-void Object::changePos(int& newtileX, int& newtileY) {
-	tileX = newtileX;
-	tileY = newtileY;
-}
 
+void Object::goThroughTunnel() {
+	if (scrPosY == 224) {
+		if (dir == LEFT && scrPosX == 0) {
+			tileX = 27;
+			scrPosX = 448;
+		}
+		else if(dir == RIGHT && scrPosX == 432){
+			tileX = 0;
+			scrPosX = 0;
+		}
+	}
+}

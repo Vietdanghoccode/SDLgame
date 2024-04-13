@@ -69,7 +69,7 @@ bool Map::iscrossRoad(int x, int y) {
 	return false;
 }
 
-bool Map::canChangDir(int x, int y, int newDir) {
+bool Map::canChangeDir(int x, int y, int newDir) {
 	return markcross[y][x][newDir];
 }
 
@@ -172,9 +172,87 @@ void Map::NextCrossTileID() {
 }
 
 bool Map::eatenCoins(int pacmanTileX, int pacmanTileY) {
-	if (tile[pacmanTileY][pacmanTileX] == 26 || tile[pacmanTileY][pacmanTileX] == 27) {
+	if (tile[pacmanTileY][pacmanTileX] == 26) {
 		tile[pacmanTileY][pacmanTileX] = 30;
+		coin++;
+		return true;
+	} else if (tile[pacmanTileY][pacmanTileX] == 27) {
+		tile[pacmanTileY][pacmanTileX] = 30;
+		existBcoin --;
 		return true;
 	}
-	return false;
+	return 0;
+}
+void Map::randomBigCoin() {
+	if (existBcoin >= 2) {
+		return;
+	}
+	int posX = rand() % 28;
+	int posY = rand() % 31;
+	while (tile[posX][posY] != 30  || (posX >10 && posX < 17 && posY > 11 && posY < 15 )) {
+		posX = rand() % 28;
+		posY = rand() % 31;
+	}
+	tile[posX][posY] = 27;
+	existBcoin++;
+	
+}
+
+int Map::bfs(int tileX, int tileY, std::pair<int , int> target, int dir) {
+	// refresh 
+	bool visited[31][28];// da tham hay chua
+	int distance[31][28];// khoang cach tu o bat dau toi o (i, j)
+
+
+	int dx[4] = { -1, 0, 0, 1 };
+	int dy[4] = { 0, -1, 1, 0 };
+
+	for (int i = 0; i < 31; i++) {
+		for (int j = 0; j < 28; j++) {
+			visited[i][j] = 0;
+			distance[i][j] = 0;
+		}
+	}
+	if (dir == UP) {
+		visited[tileX - 1][tileY] = 1;
+		visited[tileX + 1][tileY] = 1;
+		visited[tileX][tileY + 1] = 1;
+	}
+	if (dir == DOWN) {
+		visited[tileX - 1][tileY] = 1;
+		visited[tileX + 1][tileY] = 1;
+		visited[tileX][tileY - 1] = 1;
+	}
+	if (dir == LEFT) {
+		visited[tileX][tileY - 1] = 1;
+		visited[tileX + 1][tileY] = 1;
+		visited[tileX][tileY + 1] = 1;
+	}
+	if (dir == RIGHT) {
+		visited[tileX - 1][tileY] = 1;
+		visited[tileX][tileY - 1] = 1;
+		visited[tileX][tileY + 1] = 1;
+	}
+
+	// starting finding path
+	std::queue< std::pair<int, int>> q;
+	q.push({ tileX, tileY });
+	visited[tileX][tileY] = 1;
+	distance[tileX][tileY] = 0;
+	while (!q.empty()) {
+		std::pair<int, int> top = q.front();
+		q.pop();
+		for (int k = 0; k < 4; k++) {
+			int besideX = top.first + dx[k];
+			int besideY = top.second + dy[k];
+			if (besideX >= 0 && besideX <= 27 && besideY >= 0 && besideY <= 30
+				&& visited[besideX][besideY] == 0 && (getTileID(besideX,besideY) == 30||getTileID(besideX, besideY) == 26||getTileID(besideX, besideY) == 27) ) {
+				distance[besideX][besideY] = distance[top.first][top.second] + 1;
+				if (distance[target.first][target.second] != 0) break;
+				q.push({ besideX, besideY });
+				visited[besideX][besideY] = 1;
+			}
+		}
+	}
+	return distance[target.first][target.second];
 }

@@ -6,8 +6,7 @@
 #include "TextureSrc.h"
 #include "Map.h"
 #include "Pacman.h"
-
-
+#include "Ghost.h"
 
 
 class Engine {
@@ -15,9 +14,14 @@ class Engine {
 private:
 	Map* map;
 	Pacman* pacman;
+	Ghost* blinky;
+	Ghost* pinky;
+	Ghost* inky;
+	Ghost* clyde;
 	TextureSrc* objectTexture;
 
-	int frame = 0;
+	int pacmanframe = 0;
+	int ghostframe = 0;
 public:
 	Engine();
 	~Engine();
@@ -30,5 +34,7 @@ public:
 	void render(SDL_Renderer*& renderer);
 
 	void loop();
+
+	void ghostMove(Ghost*& ghost);
 
 };
