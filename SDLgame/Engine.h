@@ -7,6 +7,7 @@
 #include "Map.h"
 #include "Pacman.h"
 #include "Ghost.h"
+#include "TickManager.h"
 
 
 class Engine {
@@ -19,9 +20,8 @@ private:
 	Ghost* inky;
 	Ghost* clyde;
 	TextureSrc* objectTexture;
-
-	int pacmanframe = 0;
-	int ghostframe = 0;
+	TickManager* tickManager;
+	
 public:
 	Engine();
 	~Engine();
@@ -36,5 +36,14 @@ public:
 	void loop();
 
 	void ghostMove(Ghost*& ghost);
+
+	void PacmanCollisionGhost(Ghost*& ghost);
+	void revivalPacman();
+
+	void resetTick() {
+		tickManager->resetTick();
+	}
+
+	void renderGhost(SDL_Renderer*& renderer, Ghost*& ghost, int ghostID);
 
 };

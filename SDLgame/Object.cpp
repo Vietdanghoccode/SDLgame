@@ -12,6 +12,7 @@ Object::Object(int p_tileX, int p_tileY, int p_velX, int p_velY) {
 
 	this->scrPosX = tileX * 16;
 	this->scrPosY = tileY * 16;
+	dead = false;
 }
 
 void Object::move() {

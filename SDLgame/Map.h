@@ -54,4 +54,9 @@ public:
 
 	int bfs(int tileX, int tileY, std::pair<int , int> target, int dir);
 
+	bool isBcoin(int tileX, int tileY) {
+		if (getTileID(tileX, tileY) == 27) return true;
+		else return false;
+	}
+
 };

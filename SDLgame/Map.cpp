@@ -189,7 +189,7 @@ void Map::randomBigCoin() {
 	}
 	int posX = rand() % 28;
 	int posY = rand() % 31;
-	while (tile[posX][posY] != 30  || (posX >10 && posX < 17 && posY > 11 && posY < 15 )) {
+	while (tile[posX][posY] != 30) {
 		posX = rand() % 28;
 		posY = rand() % 31;
 	}

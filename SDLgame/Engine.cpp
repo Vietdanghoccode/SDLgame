@@ -8,6 +8,7 @@ Engine::Engine() {
 	map = NULL;
 	pacman = NULL;
 	objectTexture = NULL;
+	tickManager = NULL;
 }
 
 
@@ -20,21 +21,40 @@ Engine::~Engine() {
 
 	objectTexture = NULL;
 	delete objectTexture;
+
+	tickManager = NULL;
+	delete tickManager;
 }
 void Engine::init(SDL_Renderer*& renderer) {
 	map = new Map();
 	map->findingCrossRoad();
 	map->NextCrossTileID();
 	pacman = new Pacman();
-	blinky = new Ghost(13, 11);
-	pinky = new Ghost(14, 11); 
-	inky = new Ghost(12, 11);
+	blinky = new Ghost(12, 11);
+	pinky = new Ghost(13, 11); 
+	inky = new Ghost(14, 11);
 	clyde = new Ghost(15, 11); 
 
 	objectTexture = new TextureSrc();
 	objectTexture->loadTileTexture(renderer);
 	objectTexture->loadPacmanAndGhostTexture(renderer);
 	pacman->pushtoStack(1);
+	tickManager = new TickManager();
+	tickManager->resetTick();
+
+	srand(time(NULL));
+}
+
+void Engine::revivalPacman() {
+	pacman->respawn();
+	delete blinky;
+	blinky = new Ghost(12, 11);
+	delete pinky;
+	pinky = new Ghost(13, 11);
+	delete inky;
+	inky = new Ghost(14, 11);
+	delete clyde;
+	clyde = new Ghost(15, 11);
 }
 
 void Engine::handleEvent(SDL_Event& e) {
@@ -49,6 +69,9 @@ void Engine::handleEvent(SDL_Event& e) {
 			int pacmanTileY = pacman->getTileY();
 			int pacmanPosX = pacman->getPosX();
 			int pacmanPosY = pacman->getPosY();
+			if (pacman->isDead()) {
+				return;
+			}
 			if (!pacman->emptyDirStack()) lastDir = pacman->getDir();
 			switch (e.key.keysym.sym) {
 			case SDLK_UP:	newDir = 1; break;
@@ -65,9 +88,7 @@ void Engine::handleEvent(SDL_Event& e) {
 				if (newDir % 2 == lastDir % 2) {// cung phuong
 					if (map->canChangeDir(pacmanTileX, pacmanTileY, newDir)) {
 						pacman->pushtoStack(newDir);
-						if (!pacman->emptySpecial()) {
-							pacman->eraseSpecial();
-						}
+						pacman->eraseSpecial();
 					}
 				}
 				else {
@@ -102,8 +123,6 @@ void Engine::handleEvent(SDL_Event& e) {
 
 void Engine::render(SDL_Renderer*& renderer) {
 	SDL_Rect dsRect;
-	++pacmanframe;
-	++ghostframe;
 	for(int i = 0; i < 28; ++i) {
 		for (int j = 0; j < 31; ++j) {
 			dsRect = { i * 16, j * 16, 16, 16 };
@@ -114,15 +133,28 @@ void Engine::render(SDL_Renderer*& renderer) {
 	int dir = 0;
 	
 	if (!pacman->emptyDirStack()) dir = pacman->getDir();
- 	objectTexture->renderPacmanTexture(renderer, pacman->getPosX(), pacman->getPosY(), dir, pacmanframe);
-	objectTexture->renderGhostTexture(renderer, blinky->getPosX(), blinky->getPosY(), TextureSrc::BLINKY, blinky->getGhostDir(), ghostframe);
-	objectTexture->renderGhostTexture(renderer, pinky->getPosX(), pinky->getPosY(), TextureSrc::PINKY, pinky->getGhostDir(), ghostframe);
-	objectTexture->renderGhostTexture(renderer, inky->getPosX(), inky->getPosY(), TextureSrc::INKY, inky->getGhostDir(), ghostframe);
-	objectTexture->renderGhostTexture(renderer, clyde->getPosX(), clyde->getPosY(), TextureSrc::CLYDE, clyde->getGhostDir(), ghostframe);
 
+	if (pacman->isDead()) {
+		if (objectTexture->pacmanIsDead()) {
+            if (pacman->getLife()) revivalPacman();
+            else init(renderer);
+        }
+        else objectTexture->renderPacmanTexture(renderer, pacman->getPosX(), pacman->getPosY(), TextureSrc::DEAD);
+	}
+	else {
+		objectTexture->renderPacmanTexture(renderer, pacman->getPosX(), pacman->getPosY(), dir);
+		renderGhost(renderer, blinky, TextureSrc::BLINKY);
+		renderGhost(renderer, pinky, TextureSrc::PINKY);
+		renderGhost(renderer, inky, TextureSrc::INKY);
+		renderGhost(renderer, clyde, TextureSrc::CLYDE);
+	}
 }
 
 void Engine::loop() {
+	tickManager->updateStatus();
+	if (pacman->isDead()) {
+		return;
+	}
 	int pacmanTileX = pacman->getTileX();
 	int pacmanTileY = pacman->getTileY();
 	int pacmanPosX = pacman->getPosX();
@@ -149,27 +181,62 @@ void Engine::loop() {
 		}
 	}
 
-	
+
+
 	// frighten
-	/*
-	if (typeOfCoin != Map::notCoin) {
-		pacman->eatCoins();
-		if (typeOfCoin == Map::superCoins) {
-			blinky->setFrighten(true);
-			pinky ->setFrighten(true);
-			inky  ->setFrighten(true);
-			clyde ->setFrighten(true);
-		}
+	if (map->isBcoin(pacmanTileX, pacmanTileY)) {
+		tickManager->setStatus(TickManager::FRIGHT_MODE);
+		blinky->setFrighten(true); blinky->setDir((blinky->getGhostDir() + 2) % 4);
+		pinky->setFrighten(true); pinky->setDir((pinky->getGhostDir() + 2) % 4);
+		inky->setFrighten(true); inky->setDir((inky->getGhostDir() + 2) % 4);
+		clyde->setFrighten(true); clyde->setDir((clyde->getGhostDir() + 2) % 4);
 	}
-	*/
+	pacman->eatCoins();
+	map->eatenCoins(pacmanTileX, pacmanTileY);
+	if (map->coin % 5 == 0) {
+		map->randomBigCoin();
+	}
+	if (tickManager->getStatus() == TickManager::SCATTERING_MODE) {
+		blinky->setScattering(true);
+		pinky->setScattering(true);
+		inky->setScattering(true);
+		clyde->setScattering(true);
+	}
+	else {
+		blinky->setScattering(false);
+		pinky->setScattering(false);
+		inky->setScattering(false);
+		clyde->setScattering(false);
+	}
+
 
 	// Set up ghost target
 
 	if (!pacman->isDead()) {
-		if (!blinky->isFrighten()) {
+
+		// blinky
+		if (blinky->isDead()) {
+			blinky->setDestination(12, 11);
+			
+		}
+		else if (blinky->isScattering()) {
+			blinky->setDestination(Ghost::DEFAULT_BLINKY_TILE_X, Ghost::DEFAULT_BLINKY_TILE_Y);
+		}
+		else {
 			blinky->setDestination(pacmanTileX, pacmanTileY);
 		}
-		if (!pinky->isFrighten()) {
+
+		// pinky
+		if (pinky->isDead()) {
+			pinky->setDestination(13, 11);
+			if (pinky->getTileX() == 13 && pinky->getTileY() == 11) {
+				pinky->setDead(false);
+			}
+		}
+		else if (pinky->isScattering()) {
+			pinky->setDestination(Ghost::DEFAULT_PINKY_TILE_X, Ghost::DEFAULT_PINKY_TILE_Y);
+		}
+		else if (!pinky->isFrighten()) {
 			switch (lastDir) {
 			case Map::UP:
 				pinky->setDestination(pacmanTileX, pacmanTileY - 4);
@@ -188,16 +255,30 @@ void Engine::loop() {
 				break;
 			}
 		}
-		if (!inky->isFrighten()) {
+		// inky
+		if (inky->isDead()) {
+			inky->setDestination(14, 11);
+		}
+		else if (inky->isScattering()) {
+			inky->setDestination(Ghost::DEFAULT_INKY_TILE_X, Ghost::DEFAULT_INKY_TILE_Y);
+		}
+		else if (!inky->isFrighten()) {
 			inky->setDestination(2 * pacmanTileX - blinky->getNextTileX(), 2 * pacmanTileY - blinky->getTileY());
 		}
-		if (!clyde->isFrighten()) {
-			if ((pacmanTileX - clyde->getTileX()) * (pacmanTileX - clyde->getTileX()) + (pacmanTileY - clyde->getTileY()) * (pacmanTileY - clyde->getTileY()) >= 64)
+
+
+		// clyde
+		if (clyde->isDead()) {
+			clyde->setDestination(15, 11);
+		}
+		else if (!clyde->isFrighten()) {
+			if ((pacmanTileX - clyde->getTileX()) * (pacmanTileX - clyde->getTileX()) + (pacmanTileY - clyde->getTileY()) * (pacmanTileY - clyde->getTileY()) <= 64)
 				clyde->setDestination(Ghost::DEFAULT_CLYDE_TILE_X, Ghost::DEFAULT_CLYDE_TILE_Y);
 			else
 				clyde->setDestination(pacmanTileX, pacmanTileY);
 		}
-		
+
+
 
 	}
 	ghostMove(blinky);
@@ -211,10 +292,10 @@ void Engine::loop() {
 	inky->goThroughTunnel();
 	clyde->goThroughTunnel();
 
-	map->eatenCoins(pacmanTileX, pacmanTileY);
-	if (map->coin % 5 == 0) {
-		map->randomBigCoin();
-	}
+	PacmanCollisionGhost(blinky);
+	PacmanCollisionGhost(pinky);
+	PacmanCollisionGhost(inky);
+	PacmanCollisionGhost(clyde);
 
 	
 }
@@ -230,53 +311,69 @@ void Engine::ghostMove(Ghost*& ghost) {
 	// finding the road
 	if (ghostTileX * 16 == ghostPosX && ghostTileY * 16 == ghostPosY) {
 		if (map->iscrossRoad(ghostTileX, ghostTileY)) {
-			// bfs algorithm
-			int UP_DIS =	100000;
-			int DOWN_DIS =	100000;
-			int LEFT_DIS =	100000;
-			int RIGHT_DIS = 100000;
-			//UP
-			if (map->canChangeDir(ghostTileX, ghostTileY, Map::UP)) {
-				UP_DIS = map->bfs(ghostTileX, ghostTileY, ghost->getDestination(), Map::UP);
+			if (ghost->isFrighten()) {
+				int ghost_newdir = rand() % 4;
+				while (ghost_newdir == ghostOldDir || !map->canChangeDir(ghostTileX, ghostTileY, ghost_newdir)) {
+					ghost_newdir++;
+				}
+				ghost->setDir(ghost_newdir);
+
 			}
-			// DOWN
-			if (map->canChangeDir(ghostTileX, ghostTileY, Map::DOWN)) {
-				DOWN_DIS = map->bfs(ghostTileX, ghostTileY, ghost->getDestination(), Map::DOWN);
+			else {
+				// bfs algorithm
+				int UP_DIS = 100000;
+				int DOWN_DIS = 100000;
+				int LEFT_DIS = 100000;
+				int RIGHT_DIS = 100000;
+				//UP
+				if (map->canChangeDir(ghostTileX, ghostTileY, Map::UP)) {
+					UP_DIS = map->bfs(ghostTileX, ghostTileY, ghost->getDestination(), Map::UP);
+					if (UP_DIS == 0) UP_DIS = 100000;
+				}
+				// DOWN
+				if (map->canChangeDir(ghostTileX, ghostTileY, Map::DOWN)) {
+					DOWN_DIS = map->bfs(ghostTileX, ghostTileY, ghost->getDestination(), Map::DOWN);
+					if (DOWN_DIS == 0) DOWN_DIS == 10000;
+				}
+				// LEFT
+				if (map->canChangeDir(ghostTileX, ghostTileY, Map::LEFT)) {
+					LEFT_DIS = map->bfs(ghostTileX, ghostTileY, ghost->getDestination(), Map::LEFT);
+					if (LEFT_DIS == 0) LEFT_DIS == 10000;
+				}
+				//RIGHT
+				if (map->canChangeDir(ghostTileX, ghostTileY, Map::RIGHT)) {
+					RIGHT_DIS = map->bfs(ghostTileX, ghostTileY, ghost->getDestination(), Map::RIGHT);
+					if (RIGHT_DIS == 0) {
+						RIGHT_DIS = 100000;
+					}
+				}
+				int distanceMIN;
+				if (ghostOldDir == Map::UP) {
+					distanceMIN = std::min(UP_DIS, std::min(LEFT_DIS, RIGHT_DIS));
+					if (distanceMIN == UP_DIS) ghost->setDir(Map::UP);
+					else if (distanceMIN == LEFT_DIS) ghost->setDir(Map::LEFT);
+					else ghost->setDir(Map::RIGHT);
+				}
+				if (ghostOldDir == Map::DOWN) {
+					distanceMIN = std::min(DOWN_DIS, std::min(LEFT_DIS, RIGHT_DIS));
+					if (distanceMIN == DOWN_DIS) ghost->setDir(Map::DOWN);
+					else if (distanceMIN == LEFT_DIS) ghost->setDir(Map::LEFT);
+					else ghost->setDir(Map::RIGHT);
+				}
+				if (ghostOldDir == Map::LEFT) {
+					distanceMIN = std::min(UP_DIS, std::min(DOWN_DIS, LEFT_DIS));
+					if (distanceMIN == UP_DIS) ghost->setDir(Map::UP);
+					else if (distanceMIN == DOWN_DIS) ghost->setDir(Map::DOWN);
+					else ghost->setDir(Map::LEFT);
+				}
+				if (ghostOldDir == Map::RIGHT) {
+					distanceMIN = std::min(UP_DIS, std::min(RIGHT_DIS, DOWN_DIS));
+					if (distanceMIN == UP_DIS) ghost->setDir(Map::UP);
+					else if (distanceMIN == RIGHT_DIS) ghost->setDir(Map::RIGHT);
+					else ghost->setDir(Map::DOWN);
+				}
+				std::cout << UP_DIS << " " << RIGHT_DIS << " " << DOWN_DIS << " " << LEFT_DIS << std::endl;
 			}
-			// LEFT
-			if (map->canChangeDir(ghostTileX, ghostTileY, Map::LEFT)) {
-				LEFT_DIS = map->bfs(ghostTileX, ghostTileY, ghost->getDestination(), Map::LEFT);
-			}
-			//RIGHT
-			if (map->canChangeDir(ghostTileX, ghostTileY, Map::RIGHT)) {
-				RIGHT_DIS = map->bfs(ghostTileX, ghostTileY, ghost->getDestination(), Map::RIGHT);
-			}
-			int distanceMIN;
-			if (ghostOldDir == Map::UP) {
-				distanceMIN = std::min(UP_DIS, std::min(LEFT_DIS, RIGHT_DIS));
-				if (distanceMIN == UP_DIS) ghost->setDir(Map::UP);
-				else if (distanceMIN == LEFT_DIS) ghost->setDir(Map::LEFT);
-				else ghost->setDir(Map::RIGHT);
-			}
-			if (ghostOldDir == Map::DOWN) {
-				distanceMIN = std::min(DOWN_DIS, std::min(LEFT_DIS, RIGHT_DIS));
-				if (distanceMIN == DOWN_DIS) ghost->setDir(Map::DOWN);
-				else if (distanceMIN == LEFT_DIS) ghost->setDir(Map::LEFT);
-				else ghost->setDir(Map::RIGHT);
-			}
-			if (ghostOldDir == Map::LEFT) {
-				distanceMIN = std::min(UP_DIS, std::min(DOWN_DIS, LEFT_DIS));
-				if (distanceMIN == UP_DIS) ghost->setDir(Map::UP);
-				else if (distanceMIN == DOWN_DIS) ghost->setDir(Map::DOWN);
-				else ghost->setDir(Map::LEFT);
-			}
-			if (ghostOldDir == Map::RIGHT) {
-				distanceMIN = std::min(UP_DIS, std::min(RIGHT_DIS, DOWN_DIS));
-				if (distanceMIN == UP_DIS) ghost->setDir(Map::UP);
-				else if (distanceMIN == RIGHT_DIS) ghost->setDir(Map::RIGHT);
-				else ghost->setDir(Map::DOWN);
-			}
-			std::cout << UP_DIS << " " << RIGHT_DIS << " "<< DOWN_DIS << " " << LEFT_DIS << std::endl;
 		}
 		if (map->canChangeDir(ghostTileX, ghostTileY, ghost->getGhostDir())) ghost->moving();
 	}
@@ -286,5 +383,35 @@ void Engine::ghostMove(Ghost*& ghost) {
 			if (ghostTileX * 16 == ghostPosX && ghostTileY * 16 != ghostPosY && ghost->getGhostDir() % 2 == 1) ghost->moving();
 			else if (ghostTileY * 16 == ghostPosY && ghostTileX * 16 != ghostPosX && ghost->getGhostDir() % 2 == 0) ghost->moving();
 		}
+	}
+	if (ghost->isDead() && ghostPosX == ghostNextTileX * 16 && ghostPosY == ghostNextTileY * 16) {
+		ghost->setDead(false);
+	}
+}
+
+void Engine::PacmanCollisionGhost(Ghost*& ghost) {
+	if (ghost->isDead()) return;
+	if ((pacman->getPosX() == ghost->getPosX() && abs(pacman->getPosY() - ghost->getPosY()) <= 3) ||
+		(pacman->getPosY() == ghost->getPosY() && abs(pacman->getPosX() - ghost->getPosX()) <= 3)) {
+		if (ghost->isFrighten()) {
+			ghost->setDead(true);
+			ghost->setFrighten(false);
+		}
+		else {
+			pacman->setDead(true);
+		}
+	}
+}
+
+void Engine::renderGhost(SDL_Renderer*& renderer, Ghost*& ghost, int ghostID) {
+	if (ghost->isDead()) {
+		objectTexture->renderGhostTexture(renderer, ghost->getPosX(), ghost->getPosY(), TextureSrc::GHOST_SPIRIT, ghost->getGhostDir());
+
+	}
+	else if(ghost->isFrighten()) {
+		objectTexture->renderGhostTexture(renderer, ghost->getPosX(), ghost->getPosY(), ghostID, TextureSrc::FRIGHTEN);
+	}
+	else {
+		objectTexture->renderGhostTexture(renderer, ghost->getPosX(), ghost->getPosY(), ghostID, ghost->getGhostDir());
 	}
 }

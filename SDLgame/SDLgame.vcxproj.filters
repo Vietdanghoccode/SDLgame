@@ -45,6 +45,9 @@
     <ClCompile Include="Ghost.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TickManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -75,6 +78,9 @@
       <Filter>Resource Files</Filter>
     </ClInclude>
     <ClInclude Include="Ghost.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TickManager.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
   </ItemGroup>

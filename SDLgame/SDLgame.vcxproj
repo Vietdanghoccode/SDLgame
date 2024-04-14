@@ -154,6 +154,7 @@
     <ClCompile Include="Pacman.cpp" />
     <ClCompile Include="PlayStateManager.cpp" />
     <ClCompile Include="TextureSrc.cpp" />
+    <ClCompile Include="TickManager.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -166,6 +167,7 @@
     <ClInclude Include="Pacman.h" />
     <ClInclude Include="PlayStateManager.h" />
     <ClInclude Include="TextureSrc.h" />
+    <ClInclude Include="TickManager.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

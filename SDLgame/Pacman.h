@@ -4,22 +4,18 @@
 
 class Pacman : public Object {
 private:
-	int eatenCoins;
-	bool dead;
+	int eatenCoins = 0;
+	int lifes = 3;
 	std::stack<int> Direction;
 	std::stack<	std::pair< int, std::pair< int, int> > > Special; 
 public:
-	static const int pacmanVelocity = 1;
+	int pacmanVelocity = 1;
 
 	Pacman();
 
 	~Pacman() {
-		eatenCoins = 0;
-		dead = false;
-	}
-	
-	bool isDead() {
-		return dead;
+		lifes = 0;
+		eatenCoins = 0;		
 	}
 	bool emptyDirStack() {
 		return Direction.empty();
@@ -32,7 +28,7 @@ public:
 
 	void pushSpecialStack(int newDir, std::pair<int, int> nextCross);
 
-	int getDir() const {
+	int getDir() {
 		return Direction.top();
 	}
 	std::pair<int, int> getSpecial() {
@@ -47,5 +43,13 @@ public:
 	void eatCoins() {
 		++eatenCoins;
 	}
-
+	bool getLife() {
+		if (lifes > 0) lifes--;
+		return (lifes > 0);
+	}
+	void respawn() {
+		resetPacmanTile();
+		while (!Direction.empty()) Direction.pop();
+		eraseSpecial();
+	}
 };

@@ -20,8 +20,11 @@ private:
 
 
 	SDL_Texture* ghostTexture;
-	SDL_Rect ghost[4][5][2];
-	SDL_Rect frightenedGhost[2];
+	SDL_Rect ghost[5][6][2];
+
+	int pacmanFrame;
+	int ghostFrame[5]; // blinky, pinky, inky, clyde, sprit
+
 
 public:
 
@@ -29,25 +32,31 @@ public:
 	static const int RIGHT = 2;
 	static const int DOWN = 3;
 	static const int LEFT = 4;
+
+	static const int FRIGHTEN = 5;
 	static const int DEAD = 5;
+
 
 	static const int BLINKY = 0;
 	static const int PINKY = 1;
 	static const int INKY = 2;
 	static const int CLYDE = 3;
-	static const int TOTAL_GHOST = 4;
+	static const int GHOST_SPIRIT = 4; // hon ma cua con ghost
+	static const int TOTAL_GHOST = 5;
 
 
 	TextureSrc();
 	~TextureSrc();
+
+	bool pacmanIsDead();
 
 	void loadTileTexture(SDL_Renderer*& renderer);
 	void renderTileTexture(SDL_Renderer*& renderer, int tileID, SDL_Rect* dsRect);
 
 	void loadPacmanAndGhostTexture(SDL_Renderer*& renderer);
 
-	void renderPacmanTexture(SDL_Renderer*& renderer, int posX, int posY, int dir, int &frame);
+	void renderPacmanTexture(SDL_Renderer*& renderer, int posX, int posY, int status);
 
-	void renderGhostTexture(SDL_Renderer*& renderer, int posX, int posY, int ghostID, int dir, int& frame);
-
+	void renderGhostTexture(SDL_Renderer*& renderer, int posX, int posY, int ghostID, int status);
+	
 };

@@ -8,6 +8,7 @@ protected:
 	int velX = 0, velY = 0;
 	int tileX, tileY;
 	int dir;
+	bool dead;
 public:
 	static const int UP = 1;
 	static const int RIGHT = 2;
@@ -37,6 +38,20 @@ public:
 		return tileY;
 	}
 
+	bool isDead() {
+		return dead;
+	}
+	void setDead(bool status) {
+		dead = status;
+	}
+	void resetPacmanTile() {
+		tileX = 13; tileY = 23;
+		velX = velY = 0;
+		scrPosX = tileX * 16;// note
+		scrPosY = tileY * 16;
+		dead = false;
+
+	}
 
 	void changeVelocityDir(int p_velX, int p_velY, int p_dir);
 

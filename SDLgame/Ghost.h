@@ -7,9 +7,15 @@ private:
 	std::pair<int, int > destination;
 	int frighten;
 	int ghostDir;
-	bool dead;
+	bool scattering;
 public:
 	static const int ghostVelocity = 1;// thay doi toc do sau
+	static const int DEFAULT_BLINKY_TILE_X = 27;
+	static const int DEFAULT_BLINKY_TILE_Y = 30;
+	static const int DEFAULT_PINKY_TILE_X = 27;
+	static const int DEFAULT_PINKY_TILE_Y = 1;
+	static const int DEFAULT_INKY_TILE_X = 27;
+	static const int DEFAULT_INKY_TILE_Y = 1;
 	static const int DEFAULT_CLYDE_TILE_X = 1;
 	static const int DEFAULT_CLYDE_TILE_Y = 30;
 
@@ -34,14 +40,23 @@ public:
 		ghostDir = dir;
 	}
 	void setFrighten(bool status) {
-		if (status) frighten = 5000; // thoi gian so hai
+		if (status) frighten = 500; // thoi gian so hai
 		else frighten = 0;
 	}
+
+
 	bool isFrighten() {
 		if (frighten > 0) --frighten;
 		return (frighten > 0);
 	}
 
+	void setScattering(bool status) {
+		scattering = status;
+	}
+
+	bool isScattering() {
+		return scattering;
+	}
 	void setDestination(int tileX, int tileY);
 
 	void moving();
