@@ -85,37 +85,38 @@ void Engine::handleEvent(SDL_Event& e) {
 				}
 			}
 			else {
-				if (newDir % 2 == lastDir % 2) {// cung phuong
-					if (map->canChangeDir(pacmanTileX, pacmanTileY, newDir)) {
-						pacman->pushtoStack(newDir);
-						pacman->eraseSpecial();
-					}
-				}
-				else {
-					std::pair<int, int> nextCross = map->getnextCrossID(pacmanTileX, pacmanTileY, newDir);
-					if (lastDir % 2 == 0 && newDir % 2 == 1) { // dang di doc thi re ngang
-						if(pacmanPosY == pacmanTileY * 16) {
-							if (map->canChangeDir(pacmanTileX, pacmanTileY, newDir)) {
-								pacman->pushSpecialStack(newDir, II(pacmanTileX, pacmanTileY));
-							}
-							else if(nextCross != II(-1, -1) && !map->besideCrossIsWall(nextCross, newDir) && abs(pacmanPosX - nextCross.first * 16) <= 30) {
-								pacman->pushSpecialStack(newDir, nextCross);
-							}
+				if (pacman->getPosX() == pacman->getTileX() * 16 || pacman->getPosY() == pacman->getTileY() * 16) {
+					if (newDir % 2 == lastDir % 2) {// cung phuong
+						if (map->canChangeDir(pacmanTileX, pacmanTileY, newDir)) {
+							pacman->pushtoStack(newDir);
+							pacman->eraseSpecial();
 						}
 					}
-					else if(lastDir % 2 == 1 && newDir % 2 == 0) {//dang di ngang thi re doc
-						if (pacmanPosX == pacmanTileX * 16) {
-							if (map->canChangeDir(pacmanTileX, pacmanTileY, newDir)) {
-								pacman->pushSpecialStack(newDir, II(pacmanTileX, pacmanTileY));
-							}
-							else if(nextCross != II(-1, -1) && !map->besideCrossIsWall(nextCross,newDir)  &&abs(pacmanPosY - nextCross.second * 16) <= 30) {
-								pacman->pushSpecialStack(newDir, nextCross);
+					else {
+						std::pair<int, int> nextCross = map->getnextCrossID(pacmanTileX, pacmanTileY, newDir);
+						if (lastDir % 2 == 0 && newDir % 2 == 1) { // dang di doc thi re ngang
+							if (pacmanPosY == pacmanTileY * 16) {
+								if (map->canChangeDir(pacmanTileX, pacmanTileY, newDir)) {
+									pacman->pushSpecialStack(newDir, II(pacmanTileX, pacmanTileY));
+								}
+								else if (nextCross != II(-1, -1) && !map->besideCrossIsWall(nextCross, newDir) && abs(pacmanPosX - nextCross.first * 16) <= 30) {
+									pacman->pushSpecialStack(newDir, nextCross);
+								}
 							}
 						}
+						else if (lastDir % 2 == 1 && newDir % 2 == 0) {//dang di ngang thi re doc
+							if (pacmanPosX == pacmanTileX * 16) {
+								if (map->canChangeDir(pacmanTileX, pacmanTileY, newDir)) {
+									pacman->pushSpecialStack(newDir, II(pacmanTileX, pacmanTileY));
+								}
+								else if (nextCross != II(-1, -1) && !map->besideCrossIsWall(nextCross, newDir) && abs(pacmanPosY - nextCross.second * 16) <= 30) {
+									pacman->pushSpecialStack(newDir, nextCross);
+								}
+							}
 
+						}
 					}
 				}
-
 			}
 		}
 	}
@@ -229,9 +230,6 @@ void Engine::loop() {
 		// pinky
 		if (pinky->isDead()) {
 			pinky->setDestination(13, 11);
-			if (pinky->getTileX() == 13 && pinky->getTileY() == 11) {
-				pinky->setDead(false);
-			}
 		}
 		else if (pinky->isScattering()) {
 			pinky->setDestination(Ghost::DEFAULT_PINKY_TILE_X, Ghost::DEFAULT_PINKY_TILE_Y);
@@ -272,7 +270,7 @@ void Engine::loop() {
 			clyde->setDestination(15, 11);
 		}
 		else if (!clyde->isFrighten()) {
-			if ((pacmanTileX - clyde->getTileX()) * (pacmanTileX - clyde->getTileX()) + (pacmanTileY - clyde->getTileY()) * (pacmanTileY - clyde->getTileY()) <= 64)
+			if ((pacmanTileX - clyde->getTileX()) * (pacmanTileX - clyde->getTileX()) + (pacmanTileY - clyde->getTileY()) * (pacmanTileY - clyde->getTileY()) >= 64)
 				clyde->setDestination(Ghost::DEFAULT_CLYDE_TILE_X, Ghost::DEFAULT_CLYDE_TILE_Y);
 			else
 				clyde->setDestination(pacmanTileX, pacmanTileY);
@@ -282,9 +280,9 @@ void Engine::loop() {
 
 	}
 	ghostMove(blinky);
-	ghostMove(pinky);
-	ghostMove(inky);
-	ghostMove(clyde);
+	//ghostMove(pinky);
+	//ghostMove(inky);
+	//ghostMove(clyde);
 	
 	pacman->goThroughTunnel();
 	blinky->goThroughTunnel();
@@ -384,6 +382,7 @@ void Engine::ghostMove(Ghost*& ghost) {
 			else if (ghostTileY * 16 == ghostPosY && ghostTileX * 16 != ghostPosX && ghost->getGhostDir() % 2 == 0) ghost->moving();
 		}
 	}
+	// toi dich thi hoi sinh
 	if (ghost->isDead() && ghostPosX == ghostNextTileX * 16 && ghostPosY == ghostNextTileY * 16) {
 		ghost->setDead(false);
 	}
@@ -391,16 +390,17 @@ void Engine::ghostMove(Ghost*& ghost) {
 
 void Engine::PacmanCollisionGhost(Ghost*& ghost) {
 	if (ghost->isDead()) return;
-	if ((pacman->getPosX() == ghost->getPosX() && abs(pacman->getPosY() - ghost->getPosY()) <= 3) ||
-		(pacman->getPosY() == ghost->getPosY() && abs(pacman->getPosX() - ghost->getPosX()) <= 3)) {
-		if (ghost->isFrighten()) {
-			ghost->setDead(true);
-			ghost->setFrighten(false);
+		if ((pacman->getPosX() == ghost->getPosX() && pacman->getTileY() == ghost->getTileY()) ||
+			(pacman->getPosY() == ghost->getPosY() && pacman->getTileX() == ghost->getTileX())) {
+			if (ghost->isFrighten()) {
+
+				ghost->setDead(true);
+				ghost->setFrighten(false);
+			}
+			else {
+				pacman->setDead(true);
+			}
 		}
-		else {
-			pacman->setDead(true);
-		}
-	}
 }
 
 void Engine::renderGhost(SDL_Renderer*& renderer, Ghost*& ghost, int ghostID) {
