@@ -8,12 +8,10 @@ TickManager::TickManager() {
 
 int TickManager::getStatus() {
 	return currentStatus;
-
 }
 void TickManager::setStatus(int status) {
 	currentStatus = status;
 	lastTick = SDL_GetTicks();
-
 }
 
 void TickManager::resetTick() {

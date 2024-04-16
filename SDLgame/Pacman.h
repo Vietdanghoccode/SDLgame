@@ -4,7 +4,6 @@
 
 class Pacman : public Object {
 private:
-	int eatenCoins = 0;
 	int lifes = 3;
 	std::stack<int> Direction;
 	std::stack<	std::pair< int, std::pair< int, int> > > Special; 
@@ -15,7 +14,6 @@ public:
 
 	~Pacman() {
 		lifes = 0;
-		eatenCoins = 0;		
 	}
 	bool emptyDirStack() {
 		return Direction.empty();
@@ -40,9 +38,6 @@ public:
 
 	void eraseSpecial();
 
-	void eatCoins() {
-		++eatenCoins;
-	}
 	bool getLife() {
 		if (lifes > 0) lifes--;
 		return (lifes > 0);
@@ -52,4 +47,5 @@ public:
 		while (!Direction.empty()) Direction.pop();
 		eraseSpecial();
 	}
+	
 };

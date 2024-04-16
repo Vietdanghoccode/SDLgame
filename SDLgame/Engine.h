@@ -8,6 +8,7 @@
 #include "Pacman.h"
 #include "Ghost.h"
 #include "TickManager.h"
+#include "TextObject.h"
 
 
 class Engine {
@@ -18,11 +19,14 @@ private:
 	Ghost* blinky;
 	Ghost* pinky;
 	Ghost* inky;
-	Ghost* clyde;
+	Ghost* clyde; 
 	TextureSrc* objectTexture;
+	TextObject* Time;
+	TextObject* TextPoint;
 	TickManager* tickManager;
-	
+	int Point;
 public:
+
 	Engine();
 	~Engine();
 

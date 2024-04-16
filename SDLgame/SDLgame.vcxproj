@@ -153,6 +153,7 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Pacman.cpp" />
     <ClCompile Include="PlayStateManager.cpp" />
+    <ClCompile Include="TextObject.cpp" />
     <ClCompile Include="TextureSrc.cpp" />
     <ClCompile Include="TickManager.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="Pacman.h" />
     <ClInclude Include="PlayStateManager.h" />
+    <ClInclude Include="TextObject.h" />
     <ClInclude Include="TextureSrc.h" />
     <ClInclude Include="TickManager.h" />
     <ClInclude Include="Window.h" />

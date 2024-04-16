@@ -18,7 +18,9 @@ public:
 
 	void setStatus(int status);
 
-	Uint32 getTime();
+	Uint32 getTime() {
+		return SDL_GetTicks();
+	}
 
 	void resetTick();
 

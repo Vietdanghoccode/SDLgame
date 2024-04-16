@@ -9,6 +9,10 @@ Engine::Engine() {
 	pacman = NULL;
 	objectTexture = NULL;
 	tickManager = NULL;
+	Time = NULL;
+	TextPoint = NULL;
+	Point = 0;
+
 }
 
 
@@ -24,9 +28,17 @@ Engine::~Engine() {
 
 	tickManager = NULL;
 	delete tickManager;
+
+	Time = NULL;
+	delete Time;
+
+	TextPoint = NULL;
+	delete TextPoint;
 }
 void Engine::init(SDL_Renderer*& renderer) {
 	map = new Map();
+	Time = new TextObject();
+	TextPoint = new TextObject();
 	map->findingCrossRoad();
 	map->NextCrossTileID();
 	pacman = new Pacman();
@@ -41,7 +53,8 @@ void Engine::init(SDL_Renderer*& renderer) {
 	pacman->pushtoStack(1);
 	tickManager = new TickManager();
 	tickManager->resetTick();
-
+	Time->SetColor(TextObject::WHITE_TEXT);
+	TextPoint->SetColor(TextObject::WHITE_TEXT);
 	srand(time(NULL));
 }
 
@@ -149,10 +162,32 @@ void Engine::render(SDL_Renderer*& renderer) {
 		renderGhost(renderer, inky, TextureSrc::INKY);
 		renderGhost(renderer, clyde, TextureSrc::CLYDE);
 	}
+
+	// Time
+	std::string str_Time = "Time: ";
+	Uint32 currentTime = tickManager->getTime() / 1000;
+	Uint32 valTime = 300 - currentTime;
+	if (valTime <= 0) {
+		pacman->setDead(true);
+	}
+	else {
+		str_Time = str_Time + std::to_string(valTime);
+		Time->SetText(str_Time);
+		Time->LoadFromRenderText(Time->fontTime, renderer);
+		Time->RenderText(renderer, 13, 180);
+	}
+	// Point
+	Point += map->coin;
+	TextPoint->SetText("Point: " + std::to_string(Point));
+	TextPoint->LoadFromRenderText(Time->fontTime, renderer);
+	TextPoint->RenderText(renderer, 25, 162);
+
+
 }
 
 void Engine::loop() {
 	tickManager->updateStatus();
+
 	if (pacman->isDead()) {
 		return;
 	}
@@ -192,8 +227,10 @@ void Engine::loop() {
 		inky->setFrighten(true); inky->setDir((inky->getGhostDir() + 2) % 4);
 		clyde->setFrighten(true); clyde->setDir((clyde->getGhostDir() + 2) % 4);
 	}
-	pacman->eatCoins();
+
+
 	map->eatenCoins(pacmanTileX, pacmanTileY);
+		
 	if (map->coin % 5 == 0) {
 		map->randomBigCoin();
 	}
@@ -280,9 +317,9 @@ void Engine::loop() {
 
 	}
 	ghostMove(blinky);
-	//ghostMove(pinky);
-	//ghostMove(inky);
-	//ghostMove(clyde);
+	ghostMove(pinky);
+	ghostMove(inky);
+	ghostMove(clyde);
 	
 	pacman->goThroughTunnel();
 	blinky->goThroughTunnel();
@@ -306,8 +343,7 @@ void Engine::ghostMove(Ghost*& ghost) {
 	int ghostOldDir = ghost->getGhostDir();
 	int ghostNextTileX = ghost->getNextTileX();
 	int ghostNextTileY = ghost->getNextTileY();
-	// finding the road
-	if (ghostTileX * 16 == ghostPosX && ghostTileY * 16 == ghostPosY) {
+ 	if (ghostTileX * 16 == ghostPosX && ghostTileY * 16 == ghostPosY) {
 		if (map->iscrossRoad(ghostTileX, ghostTileY)) {
 			if (ghost->isFrighten()) {
 				int ghost_newdir = rand() % 4;

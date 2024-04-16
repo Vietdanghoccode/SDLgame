@@ -178,6 +178,7 @@ bool Map::eatenCoins(int pacmanTileX, int pacmanTileY) {
 		return true;
 	} else if (tile[pacmanTileY][pacmanTileX] == 27) {
 		tile[pacmanTileY][pacmanTileX] = 30;
+		coin++;
 		existBcoin --;
 		return true;
 	}
