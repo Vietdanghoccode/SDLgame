@@ -10,6 +10,7 @@
 #include "TickManager.h"
 #include "TextObject.h"
 #include "Sound.h"
+#include "Menu.h"
 
 
 class Engine {
@@ -27,6 +28,7 @@ private:
 	TextObject* TextPoint;
 	TickManager* tickManager;
 	int Point;
+
 public:
 
 	Engine();
@@ -51,5 +53,6 @@ public:
 	}
 
 	void renderGhost(SDL_Renderer*& renderer, Ghost*& ghost, int ghostID);
+
 
 };

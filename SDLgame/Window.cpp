@@ -1,16 +1,20 @@
 #include "Window.h"
 #include "LogStatus.h"
 
+
 Window::Window() {
 	window = NULL;
 	renderer = NULL;
 	engine = NULL;
+	menu = new Menu();
 
 }
 
 Window::~Window() {
 	engine = nullptr;
 
+	menu = NULL;
+	delete menu;
 	
 	if (renderer != NULL) {
 		SDL_DestroyRenderer(renderer);
@@ -59,23 +63,26 @@ void Window::runGame() {
 	SDL_Event e;
 	engine = new Engine();
 	engine->init(renderer);
+	
+	if (!menu->MenuLoop(renderer)) {
 
-	while (Running) {
+		while (Running) {
 
-		while (SDL_PollEvent(&e) != 0) {
-			if (e.type == SDL_QUIT) Running = false;
-			engine->handleEvent(e);
+			while (SDL_PollEvent(&e) != 0) {
+				if (e.type == SDL_QUIT) Running = false;
+				engine->handleEvent(e);
+
+			}
+
+			engine->loop();
+			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+
+			SDL_RenderClear(renderer);
+
+			engine->render(renderer);
+
+			SDL_RenderPresent(renderer);
 
 		}
-
-		engine->loop();
-		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-
-		SDL_RenderClear(renderer);
-
-		engine->render(renderer);
-
-		SDL_RenderPresent(renderer);
-
 	}
 }

@@ -9,6 +9,7 @@ TextObject::TextObject() {
 		TextConsole->Status("Failed to load time font");
 	}
 	fontTime = TTF_OpenFont("gfx//Roboto-Black.ttf", 15);
+	fontMenu = TTF_OpenFont("gfx//Roboto-Black.ttf", 40);
 	if (fontTime == NULL) {
 		TextConsole->Status("Can't load font time");
 	}
@@ -56,7 +57,7 @@ void TextObject::SetColor(int type) {
 	}
 }
 
-void TextObject::RenderText(SDL_Renderer* renderer, int posX, int posY,
+SDL_Rect TextObject::RenderText(SDL_Renderer* renderer, int posX, int posY,
 	SDL_Rect* clip, double angle, SDL_Point* center,
 	SDL_RendererFlip flip) 
 {
@@ -65,6 +66,6 @@ void TextObject::RenderText(SDL_Renderer* renderer, int posX, int posY,
 		renderQuad.w = clip->w;
 		renderQuad.h = clip->h;
 	}
-	SDL_RenderCopyEx(renderer, texture, clip, &renderQuad, angle, center, flip);
-
+	SDL_RenderCopy(renderer, texture, clip, &renderQuad);
+	return renderQuad;
 }

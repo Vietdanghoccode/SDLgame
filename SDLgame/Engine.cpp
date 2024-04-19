@@ -39,6 +39,8 @@ Engine::~Engine() {
 	//sound = NULL;
 	//delete sound;
 
+	
+
 }
 void Engine::init(SDL_Renderer*& renderer) {
 	map = new Map();

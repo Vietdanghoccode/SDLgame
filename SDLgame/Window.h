@@ -7,9 +7,11 @@
 #include <vector>
 #include "LogStatus.h"
 #include "Engine.h"
+#include "Menu.h"
 //
 class Window {
 private:
+	Menu* menu = NULL;
 	SDL_Window* window = NULL;
 	SDL_Renderer* renderer = NULL;
 

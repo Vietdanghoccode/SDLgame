@@ -145,14 +145,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Ghost.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Pacman.cpp" />
-    <ClCompile Include="PlayStateManager.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="TextObject.cpp" />
     <ClCompile Include="TextureSrc.cpp" />
@@ -161,13 +160,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />
-    <ClInclude Include="GameManager.h" />
     <ClInclude Include="Ghost.h" />
     <ClInclude Include="LogStatus.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Pacman.h" />
-    <ClInclude Include="PlayStateManager.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="TextObject.h" />
     <ClInclude Include="TextureSrc.h" />
