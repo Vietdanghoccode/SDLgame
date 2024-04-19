@@ -12,6 +12,7 @@ Engine::Engine() {
 	Time = NULL;
 	TextPoint = NULL;
 	Point = 0;
+	//sound = NULL;
 
 }
 
@@ -34,11 +35,16 @@ Engine::~Engine() {
 
 	TextPoint = NULL;
 	delete TextPoint;
+
+	//sound = NULL;
+	//delete sound;
+
 }
 void Engine::init(SDL_Renderer*& renderer) {
 	map = new Map();
 	Time = new TextObject();
 	TextPoint = new TextObject();
+	//sound = new Sound();
 	map->findingCrossRoad();
 	map->NextCrossTileID();
 	pacman = new Pacman();
@@ -56,6 +62,7 @@ void Engine::init(SDL_Renderer*& renderer) {
 	Time->SetColor(TextObject::WHITE_TEXT);
 	TextPoint->SetColor(TextObject::WHITE_TEXT);
 	srand(time(NULL));
+	//sound->Init();
 }
 
 void Engine::revivalPacman() {
@@ -71,7 +78,25 @@ void Engine::revivalPacman() {
 }
 
 void Engine::handleEvent(SDL_Event& e) {
+	//Mix_Music* theme = Mix_LoadMUS("sound/Theme.wav");
 	if (e.type == SDL_KEYDOWN) {
+		/*if (theme != NULL) {
+			if (Mix_PlayingMusic() == 0) {
+				Mix_PlayMusic(theme, 0);
+			}
+			if (e.key.keysym.sym == SDLK_m) {
+				if (Mix_PausedMusic() == 1) {
+					Mix_ResumeMusic();
+				}
+				else {
+					Mix_PauseMusic();
+				}
+			}
+		}
+		else {
+			std::cout << "Theme is null";
+		}
+		*/
 		if (e.key.keysym.sym == SDLK_DOWN
 			|| e.key.keysym.sym == SDLK_UP
 			|| e.key.keysym.sym == SDLK_LEFT
@@ -150,8 +175,11 @@ void Engine::render(SDL_Renderer*& renderer) {
 
 	if (pacman->isDead()) {
 		if (objectTexture->pacmanIsDead()) {
-            if (pacman->getLife()) revivalPacman();
-            else init(renderer);
+			if (pacman->getLife()) { 
+				revivalPacman(); 
+				pacman->decreaselife();
+			} else init(renderer);
+
         }
         else objectTexture->renderPacmanTexture(renderer, pacman->getPosX(), pacman->getPosY(), TextureSrc::DEAD);
 	}
@@ -177,15 +205,20 @@ void Engine::render(SDL_Renderer*& renderer) {
 		Time->RenderText(renderer, 13, 180);
 	}
 	// Point
-	Point += map->coin;
+	Point = map->coin *10;
 	TextPoint->SetText("Point: " + std::to_string(Point));
 	TextPoint->LoadFromRenderText(Time->fontTime, renderer);
-	TextPoint->RenderText(renderer, 25, 162);
+	TextPoint->RenderText(renderer, 13, 162);
+
+	//life 
+	objectTexture->renderLifesPacman(pacman->getLife(), renderer);
 
 
 }
 
 void Engine::loop() {
+	//Mix_Chunk* eaten = Mix_LoadWAV("sound/eaten.wav");
+
 	tickManager->updateStatus();
 
 	if (pacman->isDead()) {
@@ -229,8 +262,10 @@ void Engine::loop() {
 	}
 
 
-	map->eatenCoins(pacmanTileX, pacmanTileY);
-		
+	if (map->eatenCoins(pacmanTileX, pacmanTileY)) {
+		//Mix_PlayChannel(-1, eaten, 0);
+	}
+
 	if (map->coin % 5 == 0) {
 		map->randomBigCoin();
 	}
@@ -367,12 +402,12 @@ void Engine::ghostMove(Ghost*& ghost) {
 				// DOWN
 				if (map->canChangeDir(ghostTileX, ghostTileY, Map::DOWN)) {
 					DOWN_DIS = map->bfs(ghostTileX, ghostTileY, ghost->getDestination(), Map::DOWN);
-					if (DOWN_DIS == 0) DOWN_DIS == 10000;
+					if (DOWN_DIS == 0) DOWN_DIS = 10000;
 				}
 				// LEFT
 				if (map->canChangeDir(ghostTileX, ghostTileY, Map::LEFT)) {
 					LEFT_DIS = map->bfs(ghostTileX, ghostTileY, ghost->getDestination(), Map::LEFT);
-					if (LEFT_DIS == 0) LEFT_DIS == 10000;
+					if (LEFT_DIS == 0) LEFT_DIS = 10000;
 				}
 				//RIGHT
 				if (map->canChangeDir(ghostTileX, ghostTileY, Map::RIGHT)) {
@@ -406,7 +441,6 @@ void Engine::ghostMove(Ghost*& ghost) {
 					else if (distanceMIN == RIGHT_DIS) ghost->setDir(Map::RIGHT);
 					else ghost->setDir(Map::DOWN);
 				}
-				std::cout << UP_DIS << " " << RIGHT_DIS << " " << DOWN_DIS << " " << LEFT_DIS << std::endl;
 			}
 		}
 		if (map->canChangeDir(ghostTileX, ghostTileY, ghost->getGhostDir())) ghost->moving();

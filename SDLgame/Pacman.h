@@ -38,14 +38,16 @@ public:
 
 	void eraseSpecial();
 
-	bool getLife() {
-		if (lifes > 0) lifes--;
-		return (lifes > 0);
+	int getLife() {
+		return lifes;
 	}
 	void respawn() {
 		resetPacmanTile();
 		while (!Direction.empty()) Direction.pop();
 		eraseSpecial();
+	}
+	void decreaselife() {
+		lifes--;
 	}
 	
 };

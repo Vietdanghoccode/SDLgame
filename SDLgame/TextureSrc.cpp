@@ -151,5 +151,17 @@ void TextureSrc::renderGhostTexture(SDL_Renderer*& renderer, int posX, int posY,
     SDL_RenderCopy(renderer, ghostTexture, &srcRect, &dsRect);
 }
 
+void TextureSrc::renderLifesPacman(int i, SDL_Renderer*& renderer) {
+    SDL_Rect lifes[3];
+    for (int j = 0; j < i; j++) {
+        lifes[j].x = j * 20+ 10;
+        lifes[j].y = 260;
+        lifes[j].w = 20;
+        lifes[j].h = 20;
+    }
+    for (int j = 0; j < i; j++) {
+        SDL_RenderCopy(renderer, pacmanTexture, &pacmanRIGHT[1], &lifes[j]);
+    }
+}
 
 

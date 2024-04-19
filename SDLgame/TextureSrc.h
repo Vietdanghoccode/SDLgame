@@ -58,5 +58,7 @@ public:
 	void renderPacmanTexture(SDL_Renderer*& renderer, int posX, int posY, int status);
 
 	void renderGhostTexture(SDL_Renderer*& renderer, int posX, int posY, int ghostID, int status);
+
+	void renderLifesPacman(int i, SDL_Renderer *& renderer);
 	
 };

@@ -9,11 +9,13 @@
 #include "Ghost.h"
 #include "TickManager.h"
 #include "TextObject.h"
+#include "Sound.h"
 
 
 class Engine {
 
 private:
+	Sound* sound;
 	Map* map;
 	Pacman* pacman;
 	Ghost* blinky;
