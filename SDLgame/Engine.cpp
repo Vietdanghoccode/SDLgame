@@ -180,7 +180,11 @@ void Engine::render(SDL_Renderer*& renderer) {
 			if (pacman->getLife()) { 
 				revivalPacman(); 
 				pacman->decreaselife();
-			} else init(renderer);
+			}
+			else {
+				init(renderer);
+				back_to_menu = true;
+			}
 
         }
         else objectTexture->renderPacmanTexture(renderer, pacman->getPosX(), pacman->getPosY(), TextureSrc::DEAD);

@@ -30,6 +30,7 @@ private:
 	int Point;
 
 public:
+	bool back_to_menu = false;
 
 	Engine();
 	~Engine();

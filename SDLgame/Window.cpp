@@ -64,10 +64,9 @@ void Window::runGame() {
 	engine = new Engine();
 	engine->init(renderer);
 	
-	if (!menu->MenuLoop(renderer)) {
+	while (!menu->MenuLoop(renderer)) {
 
 		while (Running) {
-
 			while (SDL_PollEvent(&e) != 0) {
 				if (e.type == SDL_QUIT) Running = false;
 				engine->handleEvent(e);
@@ -82,7 +81,9 @@ void Window::runGame() {
 			engine->render(renderer);
 
 			SDL_RenderPresent(renderer);
-
+			if (engine->back_to_menu) {
+				break;
+			}
 		}
 	}
 }
