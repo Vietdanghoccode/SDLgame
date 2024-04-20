@@ -28,7 +28,7 @@ bool TextureSrc::pacmanIsDead() {
     return false;
 }
 void TextureSrc::loadTileTexture(SDL_Renderer*& renderer) {
-	SDL_Surface* Image = IMG_Load("gfx/Pacman Tile Labyrinth.png");
+	SDL_Surface* Image = IMG_Load("gfx/Pacman Tile Labyrinth.png"); // tile map
 	if (Image == NULL) {
 		Console->Status(IMG_GetError());
 

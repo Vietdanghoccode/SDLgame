@@ -236,7 +236,7 @@ int Map::bfs(int tileX, int tileY, std::pair<int , int> target, int dir) {
 	}
 
 	// starting finding path
-	std::queue< std::pair<int, int>> q;
+	std::queue< std::pair<int, int>> q; // hang doi
 	q.push({ tileX, tileY });
 	visited[tileX][tileY] = 1;
 	distance[tileX][tileY] = 0;

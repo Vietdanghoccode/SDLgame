@@ -85,5 +85,6 @@ void Window::runGame() {
 				break;
 			}
 		}
+		engine->back_to_menu = false;
 	}
 }

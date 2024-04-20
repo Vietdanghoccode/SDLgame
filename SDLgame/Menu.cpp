@@ -100,6 +100,7 @@ int Menu::MenuLoop(SDL_Renderer* renderer) {
 				break;
 			}
 		}
+		
 		SDL_RenderPresent(renderer);
 	}
 
