@@ -55,5 +55,7 @@ public:
 
 	void renderGhost(SDL_Renderer*& renderer, Ghost*& ghost, int ghostID);
 
+	void renderFoggy(Pacman* pacman, SDL_Renderer*& renderer);
+
 
 };

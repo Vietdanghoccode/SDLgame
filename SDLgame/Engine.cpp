@@ -218,8 +218,9 @@ void Engine::render(SDL_Renderer*& renderer) {
 
 	//life 
 	objectTexture->renderLifesPacman(pacman->getLife(), renderer);
-
-
+	//foggy
+	objectTexture->loadFoggyTexture(renderer);
+	renderFoggy(pacman, renderer);
 }
 
 void Engine::loop() {
@@ -265,6 +266,7 @@ void Engine::loop() {
 		pinky->setFrighten(true); pinky->setDir((pinky->getGhostDir() + 2) % 4);
 		inky->setFrighten(true); inky->setDir((inky->getGhostDir() + 2) % 4);
 		clyde->setFrighten(true); clyde->setDir((clyde->getGhostDir() + 2) % 4);
+
 	}
 
 
@@ -489,5 +491,55 @@ void Engine::renderGhost(SDL_Renderer*& renderer, Ghost*& ghost, int ghostID) {
 	}
 	else {
 		objectTexture->renderGhostTexture(renderer, ghost->getPosX(), ghost->getPosY(), ghostID, ghost->getGhostDir());
+	}
+}
+
+void Engine::renderFoggy(Pacman* pacman, SDL_Renderer*& renderer) {
+	std::pair<std::pair<int, int>, int> pacmanTile = map->LoadFoggy(pacman);
+	int tileX = pacmanTile.first.first;
+	int tileY = pacmanTile.first.second;
+	int range = pacmanTile.second;
+	int lastDir = 0;
+	int defaultSight = 2;
+	if (map->isBcoin(pacman->getTileX(),pacman->getTileY())) {
+		defaultSight = 4;
+	}
+	std::cout << defaultSight;
+	if (!pacman->emptyDirStack()) lastDir = pacman->getDir();
+	
+	SDL_Rect dsRect;
+	for (int i = 0; i < 28; ++i) {
+		for (int j = 0; j < 31; ++j) {
+			if (abs(i - tileX) <= defaultSight && abs(j - tileY) <= defaultSight || 
+				( i >= 0 && i <= 5 && j >= 10 && j <= 12) ||
+				(i >= 0 && i <= 5 && j >= 16 && j <= 17)
+				) continue;
+
+			else {
+				if (lastDir == Map::UP) {
+					if (0 <= (-tileY + j)&&(j - tileY ) <= range + 2 && abs (i - tileX )<= 2) {
+						continue;
+					}
+				}
+				else if (lastDir == Map::DOWN) {
+					if (0 <= (tileY - j) &&(tileY - j) <= range + 2 && abs(i - tileX) <= 2) {
+						continue;
+					}
+				}
+				else if (lastDir == Map::LEFT) {
+					if ( 0 <= (- tileX + i) &&(i - tileX) <= range + 2 && abs(j - tileY) <= 2) {
+						continue;
+					}
+				}
+				else if (lastDir == Map::RIGHT) {
+					if (0 <= (tileX - i) && ( tileX - i) <= range + 2 && abs(j - tileY) <= 2) {
+						continue;
+					}
+				}
+			}
+			
+			dsRect = { i * 16, j * 16, 16, 16 };
+			objectTexture->RenderFoggy(renderer, &dsRect);
+		}
 	}
 }

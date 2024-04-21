@@ -5,6 +5,7 @@
 class Pacman : public Object {
 private:
 	int lifes = 3;
+	int sight = 3;// 3 tile;
 	std::stack<int> Direction;
 	std::stack<	std::pair< int, std::pair< int, int> > > Special; 
 public:
@@ -14,6 +15,9 @@ public:
 
 	~Pacman() {
 		lifes = 0;
+	}
+	int getsight() {
+		return sight;
 	}
 	bool emptyDirStack() {
 		return Direction.empty();

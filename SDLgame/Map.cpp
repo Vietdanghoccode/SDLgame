@@ -185,7 +185,7 @@ bool Map::eatenCoins(int pacmanTileX, int pacmanTileY) {
 	return 0;
 }
 void Map::randomBigCoin() {
-	if (existBcoin >= 2) {
+	if (existBcoin >= 4) {
 		return;
 	}
 	int posX = rand() % 28;
@@ -256,4 +256,72 @@ int Map::bfs(int tileX, int tileY, std::pair<int , int> target, int dir) {
 		}
 	}
 	return distance[target.first][target.second];
+}
+
+std::pair<std::pair<int, int>, int> Map::LoadFoggy(Pacman* pacman) {// 
+	// check vi tri pacman
+	int pacmanTileX = pacman->getPosX() / 16;
+	int pacmanTileY = pacman->getPosY()  / 16;
+	int rX = pacman->getPosX() % 16;
+	int rY = pacman->getPosY() % 16;
+	
+	int lastDir = 0;
+	if(!pacman->emptyDirStack())lastDir = pacman->getDir();
+	int maximumSight = 0;
+	switch (lastDir) {
+	case UP:
+	{
+		for (int i = 1; i < 2; i++) {
+			if (!isWall({ pacmanTileX , pacmanTileY - i - (rY == 0 ? 0 : 1) })) {
+				maximumSight++;
+			}
+			else {
+				break;
+			}
+		}
+		break;
+	}
+	case DOWN:
+	{
+		for (int i = 1; i < pacman->getsight(); i++) {
+			if (!isWall({ pacmanTileX , pacmanTileY + i +(rY == 0 ? 0: 1) })) {
+				maximumSight++;
+			}
+			else {
+				break;
+			}
+		}
+		break;
+	}
+	case LEFT:
+	{
+		for (int i = 1; i < pacman->getsight(); i++) {
+			if (!isWall({ pacmanTileX - i- (rX == 0 ? 0 : 1), pacmanTileY})) {
+				maximumSight++;
+			}
+			else {
+				break;
+			}
+		}
+		break;
+	}
+	case RIGHT:
+	{
+		for (int i = 1; i < pacman->getsight(); i++) {
+			if (!isWall({ pacmanTileX + i + (rX == 0 ? 0 : 1) , pacmanTileY})) {
+				maximumSight++;
+			}
+			else {
+				break;
+			}
+		}
+		break;
+	}
+	default:
+		break;
+	}
+	
+	std::cout << pacmanTileX << " " << pacmanTileY << " " << maximumSight << std::endl;
+	return { {pacmanTileX, pacmanTileY}, maximumSight };
+
 }

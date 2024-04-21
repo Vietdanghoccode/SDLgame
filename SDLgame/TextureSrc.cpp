@@ -50,6 +50,23 @@ void TextureSrc::loadTileTexture(SDL_Renderer*& renderer) {
 	Image = NULL;
 }
 
+void TextureSrc::loadFoggyTexture(SDL_Renderer*& renderer) {
+    SDL_Surface* Image = IMG_Load("gfx/Foggy.png"); // tile fog
+    if (Image == NULL) {
+        Console->Status("Failed to loaf foggy");
+    }
+    else {
+        foggyTexture = SDL_CreateTextureFromSurface(renderer, Image);
+        foggyRect = { 0, 0, 30, 30 };
+    }
+    SDL_FreeSurface(Image);
+    Image = NULL;
+}
+
+void TextureSrc::RenderFoggy(SDL_Renderer*& renderer, SDL_Rect* dsRect) {
+    SDL_RenderCopy(renderer, foggyTexture, &foggyRect, dsRect);
+}
+
 void TextureSrc::renderTileTexture(SDL_Renderer*& renderer, int tileID, SDL_Rect* dsRect) {
 	SDL_RenderCopy(renderer, tileTexture, &tileSprite[tileID], dsRect);
 }

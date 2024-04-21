@@ -9,7 +9,9 @@ private:
 	LogStatus* Console = new LogStatus("TextureSrc");
 
 	SDL_Texture* tileTexture;
+	SDL_Texture* foggyTexture;
 	SDL_Rect tileSprite[32];
+	SDL_Rect foggyRect;
 
 	SDL_Texture* pacmanTexture;
 	SDL_Rect pacmanUP[3];
@@ -51,6 +53,11 @@ public:
 	bool pacmanIsDead();
 
 	void loadTileTexture(SDL_Renderer*& renderer);
+
+	void loadFoggyTexture(SDL_Renderer*& renderer);
+
+	void RenderFoggy(SDL_Renderer*& renderer, SDL_Rect* dsRect);
+
 	void renderTileTexture(SDL_Renderer*& renderer, int tileID, SDL_Rect* dsRect);
 
 	void loadPacmanAndGhostTexture(SDL_Renderer*& renderer);

@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <queue>
+#include "Pacman.h"
 
 
 class Map {
@@ -15,7 +16,8 @@ private:
 	
 
 	LogStatus* Console = new LogStatus("Map");
-	int tile[MAP_HEIGHT][MAP_WIDTH];
+	int tile[MAP_HEIGHT][MAP_WIDTH];// y/x
+	int foggy[MAP_HEIGHT][MAP_WIDTH];
 	std::pair<int, int> nextCrossID[MAP_HEIGHT][MAP_WIDTH][5]; // 5 la so huong di chuyen
 	bool markcross[MAP_HEIGHT][MAP_WIDTH][5];
 
@@ -58,5 +60,9 @@ public:
 		if (getTileID(tileX, tileY) == 27) return true;
 		else return false;
 	}
+
+	std::pair<std::pair<int, int>, int>LoadFoggy(Pacman* pacman);
+
+	
 
 };
